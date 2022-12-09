@@ -40,13 +40,16 @@ module EX(
     wire [3:0] sel_alu_src2;
     wire data_ram_en;
     wire [3:0] data_ram_wen;
+    wire [3:0] data_ram_sel;
     wire rf_we;
     wire [4:0] rf_waddr;
     wire sel_rf_res;
     wire [31:0] rf_rdata1, rf_rdata2;
     reg is_in_delayslot;
+    wire [1:0] mem_op;
 
     assign {
+        mem_op,
         ex_pc,          // 148:117
         inst,           // 116:85
         alu_op,         // 84:83
@@ -86,6 +89,7 @@ module EX(
     assign ex_result = alu_result;
 
     assign ex_to_mem_bus = {
+        mem_op,
         ex_pc,          // 75:44
         data_ram_en,    // 43
         data_ram_wen,   // 42:39
@@ -100,6 +104,23 @@ module EX(
         rf_waddr,
         ex_result
     };
+
+    // load & store
+    wire inst_lw;
+    wire inst_sw;
+
+    assign {
+        inst_lw,
+        inst_sw
+    } = mem_op;
+
+    assign data_ram_sel = inst_sw | inst_lw ? 4'b1111 : 4'b0000;
+    
+    assign data_sram_en = data_ram_en;
+    assign data_sram_wen = data_ram_wen & data_ram_sel;
+    assign data_sram_addr = ex_result;    
+    assign data_sram_wdata = rf_rdata2;
+
     // MUL part
     wire [63:0] mul_result;
     wire mul_signed; // 有符号乘法标记
