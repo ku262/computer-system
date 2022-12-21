@@ -14,7 +14,7 @@ module hilo_reg(
     reg [31:0] hi_reg, lo_reg;
     //write
     always @ (posedge clk) begin
-        if(rst)begin
+        if(rst) begin
             hi_reg <= 32'b0;
             lo_reg <= 32'b0;
         end
