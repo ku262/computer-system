@@ -18,14 +18,10 @@ module hilo_reg(
             hi_reg <= 32'b0;
             lo_reg <= 32'b0;
         end
-        else if(hi_we & lo_we) begin
-            hi_reg <= hi_i;
-            lo_reg <= lo_i;
-        end
-        else if(hi_we & ~lo_we) begin
+        if(hi_we) begin
             hi_reg <= hi_i;
         end
-        else if(~hi_we & lo_we) begin
+        if(lo_we) begin
             lo_reg <= lo_i;
         end
     end

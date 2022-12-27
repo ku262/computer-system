@@ -48,6 +48,7 @@ module MEM(
         mem_pc,         // 75:44
         data_ram_en,    // 43
         data_ram_wen,   // 42:39
+        data_ram_sel,
         sel_rf_res,     // 38
         rf_we,          // 37
         rf_waddr,       // 36:32

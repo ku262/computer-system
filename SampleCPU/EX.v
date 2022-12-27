@@ -4,7 +4,7 @@ module EX(
     input wire rst,
     // input wire flush,
     input wire [`StallBus-1:0] stall,
-
+    output wire stallreq_for_ex,
     input wire [`ID_TO_EX_WD-1:0] id_to_ex_bus,
 
     output wire [`EX_TO_MEM_WD-1:0] ex_to_mem_bus,
@@ -248,7 +248,7 @@ module EX(
         lo_we, lo_o
     };                
     
-    assign ex_result = inst_mflo ? lo_i
+    assign ex_result =  inst_mflo ? lo_i
                         : inst_mfhi ? hi_i
                         : alu_result;
 
@@ -258,6 +258,7 @@ module EX(
         ex_pc,          // 75:44
         data_ram_en,    // 43
         data_ram_wen,   // 42:39
+        data_ram_sel,
         sel_rf_res,     // 38
         rf_we,          // 37
         rf_waddr,       // 36:32

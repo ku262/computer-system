@@ -66,6 +66,7 @@ module mycpu_core(
     	.clk             (clk             ),
         .rst             (rst             ),
         .stall           (stall           ),
+        .stallreq_for_ex       (stallreq_for_ex        ),
         .id_to_ex_bus    (id_to_ex_bus    ),
         .ex_to_mem_bus   (ex_to_mem_bus   ),
         .ex_to_rf_bus    (ex_to_rf_bus    ),
@@ -100,6 +101,7 @@ module mycpu_core(
     CTRL u_CTRL(
     	.rst   (rst   ),
         .stallreq_for_load (stallreq_for_load ),
+        .stallreq_for_ex   (stallreq_for_ex   ),
         .stall (stall )
     );
     
