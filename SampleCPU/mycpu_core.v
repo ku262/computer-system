@@ -53,6 +53,7 @@ module mycpu_core(
         .rst             (rst             ),
         .stall           (stall           ),
         .stallreq_for_load        (stallreq_for_load        ),
+        .stallreq_for_bru        (stallreq_for_bru        ),        
         .if_to_id_bus    (if_to_id_bus    ),
         .inst_sram_rdata (inst_sram_rdata ),
         .wb_to_rf_bus    (wb_to_rf_bus    ),
@@ -101,6 +102,7 @@ module mycpu_core(
     CTRL u_CTRL(
     	.rst   (rst   ),
         .stallreq_for_load (stallreq_for_load ),
+        .stallreq_for_bru (stallreq_for_bru ),
         .stallreq_for_ex   (stallreq_for_ex   ),
         .stall (stall )
     );

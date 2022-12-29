@@ -39,7 +39,7 @@ module EX(
     wire [2:0] sel_alu_src1;
     wire [3:0] sel_alu_src2;
     wire data_ram_en;
-    wire [3:0] data_ram_wen;
+    wire data_ram_wen;
     wire [3:0] data_ram_sel;
     wire rf_we;
     wire [4:0] rf_waddr;
@@ -97,18 +97,29 @@ module EX(
     wire inst_lb, inst_lbu, inst_lh, inst_lhu, inst_lw;
     wire inst_sb, inst_sh, inst_sw;
 
+    wire [3:0] byte_sel;
+
     assign {
-        inst_lb, inst_lbu, inst_lb, inst_lhu,
+        inst_lb, inst_lbu, inst_lh, inst_lhu,
         inst_lw, inst_sb, inst_sh, inst_sw
     } = mem_op;
 
-    assign data_ram_sel = inst_sw | inst_lw ? 4'b1111 : 4'b0000;
-    
-    assign data_sram_en = data_ram_en;
-    assign data_sram_wen = {4{data_ram_wen[0]}} & data_ram_sel;
-    assign data_sram_addr = ex_result;    
-    assign data_sram_wdata = rf_rdata2;
 
+    decoder_2_4 u_decoder_2_4(
+    	.in  (ex_result[1:0]),
+        .out (byte_sel      )
+    );
+
+    assign data_ram_sel = inst_sb | inst_lb | inst_lbu ? byte_sel :
+                          inst_sh | inst_lh | inst_lhu ? {{2{byte_sel[2]}},{2{byte_sel[0]}}} :
+                          inst_sw | inst_lw ? 4'b1111 : 4'b0000;
+
+    assign data_sram_en = data_ram_en;
+    assign data_sram_wen = {4{data_ram_wen}} & data_ram_sel;
+    assign data_sram_addr = ex_result;    
+    assign data_sram_wdata = inst_sb ? {4{rf_rdata2[7:0]}} :
+                              inst_sh ? {2{rf_rdata2[15:0]}} :
+                                rf_rdata2;
     // mul & div
     wire inst_mfhi, inst_mflo, inst_mthi, inst_mtlo;
     wire inst_mult, inst_multu, inst_div, inst_divu;
@@ -253,12 +264,12 @@ module EX(
                         : alu_result;
 
     assign ex_to_mem_bus = {
-        mem_op,
-        hilo_bus,
-        ex_pc,          // 75:44
-        data_ram_en,    // 43
-        data_ram_wen,   // 42:39
-        data_ram_sel,
+        mem_op,         // 150:143
+        hilo_bus,       // 142:77
+        ex_pc,          // 76:45
+        data_ram_en,    // 44
+        data_ram_wen,   // 43
+        data_ram_sel,   // 42:39
         sel_rf_res,     // 38
         rf_we,          // 37
         rf_waddr,       // 36:32

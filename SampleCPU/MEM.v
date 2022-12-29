@@ -31,7 +31,7 @@ module MEM(
 
     wire [31:0] mem_pc;
     wire data_ram_en;
-    wire [3:0] data_ram_wen;
+    wire data_ram_wen;
     wire [3:0] data_ram_sel;
     wire sel_rf_res;
     wire rf_we;
